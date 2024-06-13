@@ -7,4 +7,25 @@
 		from board
 		where status = 'Y'
 	</select>
+	
+	<select id="selectBoardList" resultMap="boardResultSet">
+		select board_no, title, content, empno as writer, ename, count, create_date, update_date, is_notice, board.status
+			from board
+    			join emp on (writer = empno)
+		where board.status = 'Y'
+		order by board_no desc
+	</select>
+	
+	<resultMap type='board.model.vo.Board' id='boardResultSet'>
+		<id column="board_no" property="boardNo"/>
+		<result column="title" property="title"/>
+		<result column="content" property="contens"/>
+		<result column="writer" property="empNo"/>
+		<result column="ename" property="writer"/>
+		<result column="count" property="count"/>
+		<result column="create_date" property="createDate"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="is_notice" property="isNotice"/>
+		<result column="status" property="status"/>
+	</resultMap>
 </mapper>

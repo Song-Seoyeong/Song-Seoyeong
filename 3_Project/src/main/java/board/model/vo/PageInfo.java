@@ -5,17 +5,19 @@ public class PageInfo {
 	private int listCount;
 	private int pageLimit;
 	private int maxPage;
+	private int startPage;
 	private int endPage;
 	private int boardLimit;
 	
 	public PageInfo() {}
 
-	public PageInfo(int currentPage, int listCount, int pageLimit, int maxPage, int endPage, int boardLimit) {
+	public PageInfo(int currentPage, int listCount, int pageLimit, int maxPage, int startPage, int endPage, int boardLimit) {
 		super();
 		this.currentPage = currentPage;
 		this.listCount = listCount;
 		this.pageLimit = pageLimit;
 		this.maxPage = maxPage;
+		this.startPage = startPage;
 		this.endPage = endPage;
 		this.boardLimit = boardLimit;
 	}
@@ -68,11 +70,21 @@ public class PageInfo {
 		this.boardLimit = boardLimit;
 	}
 
+	public int getStartPage() {
+		return startPage;
+	}
+
+	public void setStartPage(int startPage) {
+		this.startPage = startPage;
+	}
+
 	@Override
 	public String toString() {
 		return "PageInfo [currentPage=" + currentPage + ", listCount=" + listCount + ", pageLimit=" + pageLimit
-				+ ", maxPage=" + maxPage + ", endPage=" + endPage + ", boardLimit=" + boardLimit + "]";
+				+ ", maxPage=" + maxPage + ", startPage=" + startPage + ", endPage=" + endPage + ", boardLimit="
+				+ boardLimit + "]";
 	}
+
 	
 	
 }

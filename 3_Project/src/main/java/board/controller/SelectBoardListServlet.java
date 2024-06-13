@@ -1,6 +1,7 @@
 package board.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import board.model.service.BoardService;
+import board.model.vo.Board;
+import board.model.vo.PageInfo;
+import common.Pagination;
 
 /**
  * Servlet implementation class SelectBoardListServlet
@@ -44,7 +48,12 @@ public class SelectBoardListServlet extends HttpServlet {
 		System.out.println(listCount);
 		
 		// 페이징 계산 : 게시글, 검색, 댓글 등 페이징 처리가 들어가는 곳이 많기때문에 따로 코드를 빼서 사용함
-	
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+		
+		ArrayList<Board> list = service.selectBoardList(pi);
+		request.setAttribute("list", list);
+		request.setAttribute("pi", pi);
+		request.getRequestDispatcher("WEB-INF/views/board/boardList.jsp").forward(request, response);
 	}
 
 	/**
