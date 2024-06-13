@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employeeMapper"> <!-- mapper에 대한 이름 지정 -->
+	<!-- <select id="login" parameterType="employee.model.vo.Employee" resultType="employee.model.vo.Employee"> -->
+		<select id="login" parameterType="employee.model.vo.Employee" resultMap="empResultSet">
+		select * 
+		from v_selectemp 
+		where empno = #{empNo}  
+		<!--  위치홀더 자리에 들어가는 곳에는 가져온 데이터의 필드명을 따라간다 
+			#{} 싱글쿼테이션으로 감싸서 값을 가져온다
+			${} << el문 사용도 가능하지만 안되는 경우도 있기에 #{} 많이 씀
+		-->
+			and pwd = #{pwd}
+			and status = 'Y'
+	</select>
+	
+	<resultMap type='employee.model.vo.Employee' id="empResultSet">
+	<!-- DB의 컬럼명과 vo의 필드명이 달라 값을 가져오지 못할 때 맴핑해주는 것 / 일치되는 값은 안해줘도 된다 -->
+		<id column="EMPNO" property="empNo"/>
+		<!-- 기본키(PK) 
+				column : result set 컬럼명 / property : setter에서 적은 이름
+		-->
+		<result column="PWD" property="pwd"/> <!-- 일반 컬럼 -->
+		<result column="ENAME" property="empName"/>
+		<result column="JOB" property="job"/>
+		<result column="MGR_NO" property="mgrNo"/>
+		<result column="MGR" property="mgr"/>
+		<result column="HIREDATE" property="hireDate"/>
+		<result column="SAL" property="sal"/>
+		<result column="COMM" property="comm"/>
+		<result column="DEPTNO" property="deptNo"/>
+		<result column="DNAME" property="dept"/> 
+		<result column="IS_ADMIN" property="isAdmin"/> 
+		<result column="STATUS" property="status"/> 
+	</resultMap>
+	
+	<select id="selectAll" resultMap="empResultSet">
+	<!-- 어차리 리스트 타입을 반환하기 때문에 resultMap은 제네딕만 신경쓰면 된다 -->
+		select * from v_selectemp
+	</select>
+	
+	<select id="checkEmpNo" parameterType="_int" resultType='_int'>
+	<!-- count(*)의 경우 어차피 가져올 값이 Int이기 때문에 resultType 으로 받아오면 된다 -->
+		select count(*)
+		from emp
+		where empno = #{inputId}
+	</select>
+	<!-- resultType/Map : resultset이 나오는 select 절 사용시에만 씀 -->
+	
+	<insert id="insertEmployee" parameterType="employee.model.vo.Employee">
+	<!-- mgrNo를 입력하지 않으면 -->
+		Insert into emp values(#{empNo}, #{empName}, #{job}, #{mgrNo}, SYSDATE, #{sal}, #{comm}, #{deptNo}, Default, #{isAdmin}, default)
+	</insert>
+	
+	<update id="updateEmployee" parameterType="employee.model.vo.Employee">
+		update emp set pwd=#{pwd}, ename=#{empName}, job=#{job}, sal=#{sal}, comm=#{comm}, deptno=#{deptNo} where empno=#{empNo}
+	</update>
+	
+	<update id="updateState" parameterType='map'>
+		update emp set ${column} = #{value} where empNo = #{id}
+		<!-- 컬럼명은''이 들어가면 안되기때문에 ${}로 사용한다 -->
+	</update>
+</mapper>
