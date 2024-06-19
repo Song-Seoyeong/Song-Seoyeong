@@ -5,7 +5,7 @@ import java.sql.Date;
 public class Board {
 	private int boardNo;
 	private String title;
-	private String contens;
+	private String content;
 	private int empNo;
 	private String writer;
 	private int count;
@@ -19,12 +19,12 @@ public class Board {
 	}
 
 
-	public Board(int boardNo, String title, String contens, int empNo, String writer, int count, Date createDate,
+	public Board(int boardNo, String title, String content, int empNo, String writer, int count, Date createDate,
 			Date updateDate, String isNotice, String status) {
 		super();
 		this.boardNo = boardNo;
 		this.title = title;
-		this.contens = contens;
+		this.content = content;
 		this.empNo = empNo;
 		this.writer = writer;
 		this.count = count;
@@ -55,13 +55,13 @@ public class Board {
 	}
 
 
-	public String getContens() {
-		return contens;
+	public String getContent() {
+		return content;
 	}
 
 
-	public void setContens(String contens) {
-		this.contens = contens;
+	public void setContens(String content) {
+		this.content = content;
 	}
 
 
@@ -137,7 +137,7 @@ public class Board {
 
 	@Override
 	public String toString() {
-		return "Board [boardNo=" + boardNo + ", title=" + title + ", contens=" + contens + ", empNo=" + empNo
+		return "Board [boardNo=" + boardNo + ", title=" + title + ", content=" + content + ", empNo=" + empNo
 				+ ", writer=" + writer + ", count=" + count + ", createDate=" + createDate + ", updateDate="
 				+ updateDate + ", isNotice=" + isNotice + ", status=" + status + "]";
 	}

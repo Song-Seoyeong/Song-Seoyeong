@@ -19,7 +19,7 @@
 	<resultMap type='board.model.vo.Board' id='boardResultSet'>
 		<id column="board_no" property="boardNo"/>
 		<result column="title" property="title"/>
-		<result column="content" property="contens"/>
+		<result column="content" property="content"/>
 		<result column="writer" property="empNo"/>
 		<result column="ename" property="writer"/>
 		<result column="count" property="count"/>
@@ -28,4 +28,78 @@
 		<result column="is_notice" property="isNotice"/>
 		<result column="status" property="status"/>
 	</resultMap>
+	
+	<select id='getSearchListCount' resultType="_int">
+		<!-- parameterType은 생략 가능하다 -->
+		<!-- 
+			동적쿼리 : 쿼리 내에서 여러 조건의 검색이 가능하게 하는 것
+			여기서 작성자는 보드 테이블에서 empno로 되어있는데, 작성자는 이름으로 검색하기 때문에 조인해줘야함
+			작성자일 경우 전체가 일치하면 검색
+			글제목/내용은 패턴 검색(부분)
+		 -->
+		select count(*)
+		from board
+			join emp on (writer = empno)
+		where board.status = 'Y'
+		<if test='condition == "writer"'>
+			and ename = #{ value }
+		</if>
+		<if test='condition == "content" or condition == "title"'>
+			and ${ condition } like '%' || #{value} || '%'  <!-- % 이용해서 부분 검색 -->
+		</if>
+		<if test='condition != "writer" and condition != "content" and condition != "title"'>
+			and (ename = #{value} or title like '%' || #{value} || '%' or content like '%' || #{value} || '%')
+		</if>
+	</select>
+	
+	<select id='selectSearchList' resultMap='boardResultSet'>
+		select *
+		from board
+			join emp on (writer = empno)
+		where board.status = 'Y'
+		<choose>
+			<when test='condition == "writer"'>
+				and ename = #{ value }
+			</when>
+			<when test='condition == "content" or condition == "title"'>
+				and ${ condition } like '%' || #{value} || '%'
+			</when>
+			<otherwise>
+				and (ename = #{value} or title like '%' || #{value} || '%' or content like '%' || #{value} || '%')
+			</otherwise>
+		</choose>
+		order by board_no desc
+	</select>
+	
+	<select id="selectBoard" resultMap='boardResultSet'>
+		select board_no, title, content, empno as writer, ename, count, create_date, update_date, is_notice, board.status
+			from board
+    			join emp on (writer = empno)
+		where board.status = 'Y'
+			and board_no = #{bId}
+	</select>
+	
+	<update id="updateCount">
+		update board
+		set count = count + 1
+		where board_no = #{bId}
+	</update>
+	
+	<insert id="insertBoard">
+		<selectKey keyProperty="boardNo" order="BEFORE" resultType="_int">
+			select seq_board.nextval from dual			
+		</selectKey>
+		insert into board values(#{boardNo}, #{title}, #{content}, #{empNo}, default, default, default, #{isNotice}, default)
+	</insert>
+	
+	<update id="updateBoard">
+		update board
+			set title=#{ title }, content=#{content}, IS_notice=#{isNotice} where board_no = #{boardNo}
+	</update>
+	
+	<update id='deleteBoard'>
+		update board
+			set status='N' where board_no = #{bId}
+	</update>
+	
 </mapper>
